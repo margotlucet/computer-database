@@ -33,7 +33,7 @@
 		<tbody>
 			<c:forEach var="computer" items="${computerList}">
 				<tr>
-					<td><a href=#>${computer.name}</a></td>
+					<td><a href="EditComputer?id=${computer.id}" >${computer.name}</a></td>
 					<td>${computer.introduced}</td>
 					<td>${computer.discontinued}</td>
 					<td>${computer.company}</td>

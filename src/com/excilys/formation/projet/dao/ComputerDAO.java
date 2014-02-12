@@ -14,10 +14,6 @@ import com.excilys.formation.projet.om.Computer;
 public class ComputerDAO {
 
 
-
-	public Computer getComputer(long id){
-		return null;
-	}
 	public List<Computer> getListComputer(){
 		List<Computer> li = new ArrayList<Computer>();
 		ResultSet rs = null ;
@@ -58,6 +54,7 @@ public class ComputerDAO {
 		String insertIntroduced = "";
 		String insertDiscontinued = "";
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		long idCompany;
 		try{
 			cn = DAOFactory.INSTANCE_DAO.getConnexion();
 			stmt = cn.createStatement();
@@ -69,13 +66,17 @@ public class ComputerDAO {
 			else 
 				insertIntroduced = "null, ";
 			requete.append(insertIntroduced);
-			
+
 			if(c.getDiscontinued()!=null)
 				insertDiscontinued = "'"+formatter.format(c.getDiscontinued())+" 00:00:00', ";
 			else
 				insertDiscontinued = "null, ";
 			requete.append(insertDiscontinued);
-			requete.append(c.getCompany().getId());
+			idCompany = c.getCompany().getId();
+			if(idCompany!=0)
+				requete.append(idCompany);
+			else
+				requete.append("null");
 			requete.append(");");
 			stmt.executeUpdate(requete.toString());
 		}
@@ -83,6 +84,17 @@ public class ComputerDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		finally {
+			try {
+				if (stmt != null)
+
+					stmt.close();
+
+				if (cn != null) cn.close(); 
+			} catch (SQLException e) {}
+		}
+
+		
 	}
 	public List<Computer> getListComputer(String search){
 		List<Computer> li = new ArrayList<Computer>();
@@ -161,7 +173,123 @@ public class ComputerDAO {
 				e.printStackTrace();
 			}
 		}
-
 		return list;
+	}
+	
+	public Computer getComputerById(long id){
+		Computer computer = new Computer();
+		ResultSet rs = null ;
+		Statement stmt = null;
+		Connection cn = null;
+		List<Computer> li = null;
+		try {
+			cn = DAOFactory.INSTANCE_DAO.getConnexion();
+			stmt = cn.createStatement();
+			rs = stmt.executeQuery("SELECT id, name ,introduced, discontinued, company_id FROM computer WHERE id='"+id+"';");
+			li = this.getResultList(rs, cn);
+			computer = li.get(0);
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		finally {
+			try {
+				if (rs != null)
+
+					rs.close();
+
+				if (stmt != null)
+
+					stmt.close();
+
+				if (cn != null) cn.close(); 
+			} catch (SQLException e) {}
+		}
+		
+		return computer;
+	}
+	public void deleteComputer(long id){
+		Statement stmt = null;
+		Connection cn = null;
+		StringBuilder requete = new StringBuilder();
+		try{
+			cn = DAOFactory.INSTANCE_DAO.getConnexion();
+			stmt = cn.createStatement();
+			requete.append("DELETE FROM computer WHERE id=");
+			requete.append(id);
+			requete.append(";");
+			stmt.executeUpdate(requete.toString());
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		finally {
+			try {
+				if (stmt != null)
+
+					stmt.close();
+
+				if (cn != null) cn.close(); 
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	public void editComputer(Computer c){
+		Statement stmt = null;
+		Connection cn = null;
+		StringBuilder requete = new StringBuilder();
+		String insertIntroduced = "";
+		String insertDiscontinued = "";
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		long idCompany = 0;
+		try {
+			cn = DAOFactory.INSTANCE_DAO.getConnexion();
+			stmt = cn.createStatement();
+			requete.append("UPDATE computer SET name='");
+			requete.append(c.getName());
+			requete.append("', introduced=");
+			if(c.getIntroduced()!=null)
+				insertIntroduced = "'"+formatter.format(c.getIntroduced())+" 00:00:00', discontinued=";
+			else 
+				insertIntroduced = "null, discontinued=";
+			requete.append(insertIntroduced);
+
+			if(c.getDiscontinued()!=null)
+				insertDiscontinued = "'"+formatter.format(c.getDiscontinued())+" 00:00:00', company_id=";
+			else
+				insertDiscontinued = "null, ";
+			requete.append(insertDiscontinued);
+			idCompany = c.getCompany().getId();
+			if(idCompany!=0)
+				requete.append(idCompany+" WHERE id=");
+			else
+				requete.append("null WHERE id=");
+			requete.append(c.getId());
+			requete.append(";");
+			stmt.executeUpdate(requete.toString());
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		finally {
+			try {
+
+				if (stmt != null)
+
+					stmt.close();
+
+				if (cn != null) 
+					
+					cn.close(); 
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 }

@@ -9,8 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.formation.projet.dao.DAOFactory;
-import com.excilys.formation.projet.dto.ComputerDTO;
-import com.excilys.formation.projet.service.CompanyService;
+import com.excilys.formation.projet.dto.ComputerDTOAdd;
 import com.excilys.formation.projet.service.ComputerService;
 
 /**
@@ -39,10 +38,9 @@ public class AddComputerServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		CompanyService companyService = new CompanyService();
-		String companyName = companyService.getCompanyNameById(Integer.parseInt(request.getParameter("company")));
-		ComputerDTO cDTO = new ComputerDTO(request.getParameter("name"), request.getParameter("introducedDate"), 
-				request.getParameter("discontinuedDate"), companyName);
+
+		ComputerDTOAdd cDTO = new ComputerDTOAdd(request.getParameter("name"), request.getParameter("introducedDate"), 
+				request.getParameter("discontinuedDate"), request.getParameter("company"));
 		ComputerService computerService = new ComputerService(DAOFactory.INSTANCE_DAO.getComputerDAO());
 		computerService.addComputer(cDTO);
 		getServletContext().getRequestDispatcher("/index.jsp").forward(request,response);	

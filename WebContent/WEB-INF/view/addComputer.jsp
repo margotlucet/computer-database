@@ -17,7 +17,7 @@
 				<label for="introduced">Introduced date:</label>
 				<div class="input">
 					<input type="date" name="introducedDate" />
-					<span class="help-inline">DD-MM-YY</span>
+					<span class="help-inline">DD-MM-YYYY</span>
 				</div>
 			</div>
 			<div class="clearfix">
