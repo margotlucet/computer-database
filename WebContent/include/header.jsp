@@ -8,6 +8,9 @@
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/main.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/date.js"></script>
+<script type="text/javascript" src="js/jquery.form-validator.js"></script>
 </head>
 <body>
 	<header class="topbar">

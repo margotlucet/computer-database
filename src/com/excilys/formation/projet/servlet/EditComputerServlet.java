@@ -1,6 +1,7 @@
 package com.excilys.formation.projet.servlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,9 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.formation.projet.dao.DAOFactory;
+import com.excilys.formation.projet.mapper.ComputerDTOMapper;
+import com.excilys.formation.projet.om.Company;
+import com.excilys.formation.projet.om.Computer;
 import com.excilys.formation.projet.dto.ComputerDTO;
-import com.excilys.formation.projet.dto.ComputerDTOAdd;
+import com.excilys.formation.projet.service.CompanyService;
 import com.excilys.formation.projet.service.ComputerService;
+import com.excilys.formation.projet.service.impl.CompanyServiceImpl;
+import com.excilys.formation.projet.service.impl.ComputerServiceImpl;
 
 /**
  * Servlet implementation class EditComputerServlet
@@ -33,9 +39,13 @@ public class EditComputerServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		ComputerService cs = new ComputerService();
-		ComputerDTO cdto = cs.getComputerById(request.getParameter("id"));
-		request.setAttribute("computer", cdto);
+		ComputerService cs = new ComputerServiceImpl();
+		CompanyService companyService = new CompanyServiceImpl();
+		List<Company> listResult = companyService.getListeCompany();
+		Computer c = cs.getById(Long.parseLong(request.getParameter("id")));
+		ComputerDTO cDTO = ComputerDTOMapper.toComputerDTO(c);
+		request.setAttribute("computer", cDTO);
+		request.setAttribute("companies", listResult);
 		getServletContext().getRequestDispatcher("/WEB-INF/view/editComputer.jsp").forward(request,response);	
 	}
 
@@ -44,11 +54,30 @@ public class EditComputerServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		ComputerDTOAdd cDTO = new ComputerDTOAdd(request.getParameter("name"), request.getParameter("introducedDate"), 
-				request.getParameter("discontinuedDate"), request.getParameter("company"));
-		ComputerService computerService = new ComputerService(DAOFactory.INSTANCE_DAO.getComputerDAO());
-		computerService.editComputer(cDTO, request.getParameter("id"));
+		ComputerDTO cDTO = new ComputerDTO.Builder().id(Long.parseLong(request.getParameter("id"))).name(request.getParameter("name"))
+				.introduced(request.getParameter("introducedDate")).discontinued(request.getParameter("discontinuedDate"))
+				.companyId(Long.parseLong(request.getParameter("company"))).build();
+		Computer c = ComputerDTOMapper.toComputer(cDTO);
+
+
+		ComputerService computerService = new ComputerServiceImpl(DAOFactory.INSTANCE_DAO.getComputerDAO());
+		//Boolean success = false;
+		//StringBuilder message = new StringBuilder();
+		computerService.update(c);
+		//String companyName = request.getParameter("companyName");
+		//if(success){
 		getServletContext().getRequestDispatcher("/index.jsp").forward(request,response);	
+		/*
+		else{
+			request.setAttribute("message",message.toString());
+			CompanyService companyService = new CompanyService();
+			List<Company> listResult = companyService.getListeCompany();
+			request.setAttribute("companies", listResult);
+			cDTO.setCompanyName(companyName);
+			request.setAttribute("computer", cDTO);
+			getServletContext().getRequestDispatcher("/WEB-INF/view/editComputer.jsp").forward(request,response);	
+		}
+		 */
 	}
 
 }

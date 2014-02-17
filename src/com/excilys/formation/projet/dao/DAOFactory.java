@@ -2,6 +2,9 @@ package com.excilys.formation.projet.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+
+import com.excilys.formation.projet.dao.impl.CompanyDAOImpl;
+import com.excilys.formation.projet.dao.impl.ComputerDAOImpl;
 // On fait un enum pour avoir une seule instance de DAOFactory
 public enum DAOFactory {
 	INSTANCE_DAO;
@@ -9,8 +12,8 @@ public enum DAOFactory {
 	private CompanyDAO companyDAO;
 	
 	private DAOFactory(){
-		computerDAO = new ComputerDAO();
-		companyDAO = new CompanyDAO();
+		computerDAO = new ComputerDAOImpl();
+		companyDAO = new CompanyDAOImpl();
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (InstantiationException | IllegalAccessException

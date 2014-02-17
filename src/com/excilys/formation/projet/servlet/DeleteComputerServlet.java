@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.formation.projet.service.ComputerService;
+import com.excilys.formation.projet.service.impl.ComputerServiceImpl;
 
 /**
  * Servlet implementation class DeleteComputerServlet
@@ -29,8 +30,8 @@ public class DeleteComputerServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ComputerService computerService = new ComputerService();
-		computerService.deleteComputer(request.getParameter("id"));
+		ComputerService computerService = new ComputerServiceImpl();
+		computerService.delete(request.getParameter("id"));
 		getServletContext().getRequestDispatcher("/index.jsp").forward(request,response);	
 		// TODO Auto-generated method stub
 	}
