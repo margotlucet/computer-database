@@ -7,13 +7,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.formation.projet.dto.ComputerDTO;
 import com.excilys.formation.projet.om.Company;
 import com.excilys.formation.projet.om.Computer;
 import com.excilys.formation.projet.util.Constant;
+import com.excilys.formation.projet.wrapper.PageWrapper;
 
 public class ComputerDTOMapper {
-
+	static final Logger LOGGER = LoggerFactory.getLogger(ComputerDTOMapper.class);
 	public static ComputerDTO toComputerDTO(Computer c){
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		String introduced;
@@ -46,6 +50,17 @@ public class ComputerDTOMapper {
 			computers.add(toComputer(cDTO));
 		}
 		return computers;
+	}
+	
+	public static PageWrapper<ComputerDTO> toComputerDTOPageWrapper(PageWrapper<Computer> pw){
+		PageWrapper<ComputerDTO> pwDTO = new PageWrapper<ComputerDTO>();
+		pwDTO.setElementList(toComputerDTOList(pw.getElementList()));
+		LOGGER.debug("Dans le mapper currPage : "+pw.getCurrPage());
+		pwDTO.setCurrPage(pw.getCurrPage());
+		pwDTO.setPageCount(pw.getPageCount());
+		pwDTO.setResultCount(pw.getResultCount());
+		pwDTO.setResultsPerPage(pw.getResultsPerPage());
+		return pwDTO;
 	}
 
 	public static Computer toComputer(ComputerDTO cDTO){

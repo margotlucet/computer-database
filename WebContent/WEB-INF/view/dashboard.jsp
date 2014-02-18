@@ -3,11 +3,10 @@
 <%@ page import="com.excilys.formation.projet.om.*"%>
 <%@ page import="java.util.*"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="../../taglib/paginator.tld" prefix="paginator"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="h"%>
 
 <section id="main">
-	<h1 id="homeTitle" style="FONT-FAMILY: 'Bitstream Vera Sans';">${count}
+	<h1 id="homeTitle" style="FONT-FAMILY: 'Bitstream Vera Sans';">${pageResult.resultCount}
 		Computers found</h1>
 	<div id="actions">
 		<form action="DisplayComputers" method="GET">
@@ -15,9 +14,9 @@
 				<input type="search" id="searchbox" name="search" value=""
 					placeholder="Search name">
 			</div>
-			<label for="nbResult">Results per page</label>
+			<label for="resultsPerPage">Results per page</label>
 			<div class="input">
-				<select name="nbResult" id="nbResult">
+				<select name="resultsPerPage" id="resultsPerPage">
 					<option>10</option>
 					<option>15</option>
 					<option>20</option>
@@ -34,9 +33,9 @@
 	<div class="alert ">${message.message}</div>
 
 	<div class="pagination">
-		<h:page totalElements="20" actionPrefix="DisplayComputers?"
-			pageCount="${pages}" resultsPerPage="20" page="${currPage}"
-			numberOfElements="30">
+		<h:page totalElements="${pageResult.resultCount}" actionPrefix="DisplayComputers?"
+			pageCount="${pageResult.pageCount}" resultsPerPage="${pageResult.resultsPerPage}" page="${pageResult.currPage}"
+			numberOfElements="${pageResult.currentResultCount}">
 		</h:page>
 	</div>
 	<table class="computers zebra-striped">
@@ -53,7 +52,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach var="computer" items="${computerList}">
+			<c:forEach var="computer" items="${pageResult.elementList}">
 				<tr>
 					<td><a href="EditComputer?id=${computer.id}">${computer.name}</a></td>
 					<td>${computer.introduced}</td>

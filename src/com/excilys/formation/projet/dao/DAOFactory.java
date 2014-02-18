@@ -2,10 +2,17 @@ package com.excilys.formation.projet.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import com.excilys.formation.projet.dao.impl.CompanyDAOImpl;
 import com.excilys.formation.projet.dao.impl.ComputerDAOImpl;
-// On fait un enum pour avoir une seule instance de DAOFactory
+// On fait un enum pour avoir une seule instance de DAOFactor
+/**
+ * Factory of DAO
+ * @author excilys
+ *
+ */
 public enum DAOFactory {
 	INSTANCE_DAO;
 	private ComputerDAO computerDAO;
@@ -21,6 +28,10 @@ public enum DAOFactory {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Gets a connection to the database
+	 * @return a new connection
+	 */
 	public Connection getConnexion(){
 		Connection cn = null;
 
@@ -40,6 +51,10 @@ public enum DAOFactory {
 
 	public CompanyDAO getCompanyDAO() {
 		return companyDAO;
+	}
+	
+	public void closeConnection(ResultSet rs, Connection cn, PreparedStatement ps){
+		
 	}
 
 }

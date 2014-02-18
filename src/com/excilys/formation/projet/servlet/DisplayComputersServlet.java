@@ -1,7 +1,6 @@
 package com.excilys.formation.projet.servlet;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,11 +8,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.formation.projet.dao.DAOFactory;
 import com.excilys.formation.projet.dto.ComputerDTO;
 import com.excilys.formation.projet.mapper.ComputerDTOMapper;
 import com.excilys.formation.projet.service.ComputerService;
 import com.excilys.formation.projet.service.impl.ComputerServiceImpl;
+import com.excilys.formation.projet.wrapper.PageWrapper;
 
 /**
  * Servlet implementation class DisplayComputersServlet
@@ -21,13 +24,13 @@ import com.excilys.formation.projet.service.impl.ComputerServiceImpl;
 @WebServlet("/DisplayComputers")
 public class DisplayComputersServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	static final Logger LOGGER = LoggerFactory.getLogger(DisplayComputersServlet.class);
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public DisplayComputersServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -36,42 +39,36 @@ public class DisplayComputersServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ComputerService computerService = new ComputerServiceImpl(DAOFactory.INSTANCE_DAO.getComputerDAO());
 		
-		List<ComputerDTO> resultList = null;
+		PageWrapper<ComputerDTO> pageResult = null;
 		String page = request.getParameter("page");
-		String resultsPerPage = request.getParameter("resultsPerPage");
+		LOGGER.debug("Param page number :"+page);
+		String resultsPerPageString = request.getParameter("resultsPerPage");
+		LOGGER.debug("Results per page : "+resultsPerPageString);
 		String search = request.getParameter("search");	
-		
-		int quantity = 0; 
-		int nbResultsPerPage = 10;
-		int pageNum = 1;
+		int resultsPerPage = 10;
 		int currPage = 1;
 		
 		
 		if((page!=null)&&(!page.equals(""))){
-			pageNum = Integer.parseInt(page);
-			currPage = pageNum;
-			System.out.println(pageNum);
+			currPage = Integer.parseInt(page);
+			LOGGER.debug("Int page number :"+page);
 		}
-		if((resultsPerPage!=null)&&(!resultsPerPage.equals(""))){
-			nbResultsPerPage = Integer.parseInt(resultsPerPage);
+		if((resultsPerPageString!=null)&&(!resultsPerPageString.equals(""))){
+			resultsPerPage = Integer.parseInt(resultsPerPageString);
 		}
-		int nbPages = quantity/nbResultsPerPage;
 		
 		if((search!=null)&&(!search.equals(""))){
-			quantity = computerService.getNumber(search);
-			resultList = ComputerDTOMapper.toComputerDTOList(computerService.getPage(pageNum, nbResultsPerPage, search));
+			LOGGER.debug("Recherche");
+			pageResult = ComputerDTOMapper.toComputerDTOPageWrapper(computerService.getPage(currPage, resultsPerPage, search));
 		}
 		else{
-			quantity = computerService.getNumber();
-			resultList = ComputerDTOMapper.toComputerDTOList(computerService.getPage(pageNum, nbResultsPerPage));
+			pageResult = ComputerDTOMapper.toComputerDTOPageWrapper(computerService.getPage(currPage, resultsPerPage));
 		}
-
-		
-		request.setAttribute("computerList", resultList);
-		request.setAttribute("count",quantity);
-		request.setAttribute("pages", nbPages);
-		request.setAttribute("currPage", currPage);
+	
+		request.setAttribute("pageResult", pageResult);
+		LOGGER.debug("Ma page : "+pageResult);
 		request.setAttribute("search", search);
+		request.setAttribute("resultsPerPage", resultsPerPage);
 		getServletContext().getRequestDispatcher("/WEB-INF/view/dashboard.jsp").forward(request,response);	
 	}
 

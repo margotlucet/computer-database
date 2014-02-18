@@ -3,19 +3,27 @@ package com.excilys.formation.projet.om;
 import java.io.Serializable;
 
 import com.excilys.formation.projet.util.Constant;
-
+/**
+ * Class representing a company
+ * @author excilys
+ *
+ */
 public class Company implements Serializable{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private long id;
 	private String name;
-	
+	/**
+	 * Default constructor of company
+	 */
 	public Company(){
 		this.setId(0);
 		this.setName(Constant.UNKNOWN);
 	}
+	/**
+	 * Builder contructor of company
+	 * @param b
+	 */
 	private Company(Builder b){
 		this.setId(b.getId());
 		this.setName(b.getName());
@@ -32,7 +40,11 @@ public class Company implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	/**
+	 * Builder of company
+	 * @author excilys
+	 *
+	 */
 	public static class Builder{
 		private long id;
 		private String name;
@@ -73,6 +85,10 @@ public class Company implements Serializable{
 		}
 
 
+	}
+	@Override
+	public String toString() {
+		return "Company [id=" + id + ", name=" + name + "]";
 	}
 
 

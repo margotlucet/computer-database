@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.excilys.formation.projet.util.Constant;
-
+/**
+ * Class representing a computer 
+ * @author excilys
+ *
+ */
 public class Computer implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private long id;
 	private String name;
@@ -19,7 +20,10 @@ public class Computer implements Serializable{
 
 
 
-	
+	/**
+	 * Builder constructor of computer
+	 * @param b
+	 */
 	private Computer(Builder b){
 		this.setId(b.getId());
 		this.setName(b.getName());
@@ -64,7 +68,11 @@ public class Computer implements Serializable{
 				+ introduced + ", discontinued=" + discontinued + ", company="
 				+ company + "]";
 	}
-	
+	/**
+	 * Builder of computer
+	 * @author excilys
+	 *
+	 */
 	public static class Builder{
 		private long id;
 		private String name;

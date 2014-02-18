@@ -2,7 +2,12 @@ package com.excilys.formation.projet.dto;
 
 import com.excilys.formation.projet.util.Constant;
 
-
+/**
+ * Data Trasfert Object of Computer
+ * 
+ * @author excilys
+ *
+ */
 public class ComputerDTO {
 	private long id;
 	private String name;
@@ -11,7 +16,9 @@ public class ComputerDTO {
 	private long companyId;
 	private String companyName;
 
-
+/**
+ * Default constructor of ComputerDTO
+ */
 	public ComputerDTO() {
 		id = 0;
 		name = Constant.UNKNOWN;
@@ -75,6 +82,11 @@ public class ComputerDTO {
 		this.setCompanyId(b.getCompanyId());
 		this.setCompanyName(b.getCompanyName());
 	}
+	/**
+	 * Builder of ComputerDTO
+	 * @author excilys
+	 *
+	 */
 	public static class Builder{
 		private long id = 0;
 		private String name;

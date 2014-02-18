@@ -7,12 +7,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.formation.projet.dao.CompanyDAO;
 import com.excilys.formation.projet.dao.DAOFactory;
 import com.excilys.formation.projet.om.Company;
 
-
+/**
+ * DAO for Company
+ * @author margot
+ *
+ */
 public class CompanyDAOImpl implements CompanyDAO {
+	static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAOImpl.class);
+	/**
+	 * 
+	 * @param pName the name of the company
+	 * @return
+	 */
 	public static Company getCompanyByName(String pName){
 		Company company = new Company.Builder().build();
 		ResultSet rs = null ;
@@ -23,12 +36,15 @@ public class CompanyDAOImpl implements CompanyDAO {
 			stmt = cn.prepareStatement("SELECT id,name FROM company WHERE name=?;");
 			stmt.setString(1,pName);
 			rs = stmt.executeQuery();
+			LOGGER.info("Query executed "+stmt);
 			while(rs.next()){
 				company.setId(rs.getLong(1));
 				company.setName(rs.getString(2));
 			}
+			LOGGER.info("Company obtained");
 		}
 		catch (SQLException e){
+			LOGGER.error("SQL exception raised while trying to get a company by name");
 			e.printStackTrace();
 		}
 		finally{
@@ -46,6 +62,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 					cn.close();
 
 			} catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}
@@ -55,6 +72,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 	/* (non-Javadoc)
 	 * @see com.excilys.formation.projet.dao.impl.CompanyDAO#getCompanyById(long)
 	 */
+
 	@Override
 	public Company getById(long id){
 		Company c = new Company.Builder().build();
@@ -67,12 +85,16 @@ public class CompanyDAOImpl implements CompanyDAO {
 			stmt = cn.prepareStatement("SELECT name FROM company WHERE id=?;");
 			stmt.setLong(1, id);
 			rs = stmt.executeQuery();
+			LOGGER.info("Query executed "+stmt);
 			while(rs.next()){
 				c.setId(id);
 				c.setName(rs.getString(1));
 			}
+			LOGGER.info("Company obtained",c);
+
 		}
 		catch (SQLException e) {
+			LOGGER.error("SQL exception raised while trying to get a company by id");
 			e.printStackTrace();
 		}
 
@@ -91,6 +113,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 					cn.close();
 			} 
 			catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}
@@ -110,10 +133,12 @@ public class CompanyDAOImpl implements CompanyDAO {
 			cn = DAOFactory.INSTANCE_DAO.getConnexion();
 			stmt = cn.prepareStatement("SELECT id, name FROM company;");
 			rs = stmt.executeQuery();
+			LOGGER.info("Query executed "+stmt);
 			li = getResultList(rs,cn);
+			LOGGER.info("Companies obtained");
 		}
 		catch (SQLException e) {
-			// TODO Auto-generated catch block
+			LOGGER.error("SQL exception raised while trying to get companies");
 			e.printStackTrace();
 		}
 
@@ -133,6 +158,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 
 			} 
 			catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}
@@ -148,8 +174,9 @@ public class CompanyDAOImpl implements CompanyDAO {
 				companyCourant = new Company.Builder().id(rs.getLong(1)).name(rs.getString(2)).build();
 				list.add(companyCourant);
 			}
+			LOGGER.info("List of results obtained");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			LOGGER.error("SQL exception raised while trying to get a list of results");
 			e.printStackTrace();
 		}
 
@@ -161,7 +188,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 				if(cn!=null)
 					cn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 

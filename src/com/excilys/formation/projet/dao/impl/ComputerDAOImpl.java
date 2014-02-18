@@ -9,51 +9,18 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.formation.projet.dao.ComputerDAO;
 import com.excilys.formation.projet.dao.DAOFactory;
 import com.excilys.formation.projet.om.Company;
 import com.excilys.formation.projet.om.Computer;
+import com.excilys.formation.projet.wrapper.PageWrapper;
 
 public class ComputerDAOImpl implements ComputerDAO {
+	static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
-
-	public List<Computer> getComputers(){
-		List<Computer> li = new ArrayList<Computer>();
-		ResultSet rs = null ;
-		PreparedStatement stmt = null;
-		Connection cn = null;
-		try {
-			cn = DAOFactory.INSTANCE_DAO.getConnexion();
-			stmt = cn.prepareStatement("SELECT id, name ,introduced, discontinued, company_id FROM computer;");
-			rs = stmt.executeQuery();
-			li = this.getResultList(rs, cn);
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		finally {
-			try {
-				if (rs != null)
-
-					rs.close();
-
-				if (stmt != null)
-
-					stmt.close();
-
-				if (cn != null) 
-
-					cn.close(); 
-
-			} 
-			catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return li;
-	}
 
 	/* (non-Javadoc)
 	 * @see com.excilys.formation.projet.dao.impl.ComputerDAO#addComputer(com.excilys.formation.projet.om.Computer)
@@ -84,8 +51,11 @@ public class ComputerDAOImpl implements ComputerDAO {
 				stmt.setNull(4, Types.BIGINT);
 			System.out.println(stmt);
 			result=stmt.executeUpdate();
+			LOGGER.info("Insert executed"+stmt);
+			LOGGER.info("Computer added");
 		}
 		catch (SQLException e) {
+			LOGGER.error("SQL exception raised while trying to add a computer");
 			e.printStackTrace();
 		}
 		finally {
@@ -100,6 +70,7 @@ public class ComputerDAOImpl implements ComputerDAO {
 
 			} 
 			catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}
@@ -107,44 +78,6 @@ public class ComputerDAOImpl implements ComputerDAO {
 
 	}
 
-	public List<Computer> getComputers(String search){
-		List<Computer> li = new ArrayList<Computer>();
-		ResultSet rs = null ;
-		PreparedStatement stmt = null;
-		Connection cn = null;
-		try {
-			cn = DAOFactory.INSTANCE_DAO.getConnexion();
-			stmt = cn.prepareStatement("SELECT id, name ,introduced, discontinued, company_id FROM computer WHERE name LIKE ?;");
-			stmt.setString(1, "%"+search+"%");
-			rs = stmt.executeQuery();
-			li = this.getResultList(rs, cn);
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		finally {
-			try {
-				if (rs != null)
-
-					rs.close();
-
-				if (stmt != null)
-
-					stmt.close();
-
-				if (cn != null) 
-
-					cn.close(); 
-
-			} 
-			catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return li;
-	}
 	public List<Computer> getResultList(ResultSet rs, Connection cn){
 		List<Computer> list = new ArrayList<Computer>();
 		Computer computerCourant = null;
@@ -161,6 +94,7 @@ public class ComputerDAOImpl implements ComputerDAO {
 					stmtCompany = cn.prepareStatement("SELECT name FROM company WHERE id=?;");
 					stmtCompany.setLong(1, id);
 					rsCompany = stmtCompany.executeQuery();
+					LOGGER.debug("Query executed "+stmtCompany);
 					while(rsCompany.next()){
 						name = rsCompany.getString(1);
 					}
@@ -170,10 +104,11 @@ public class ComputerDAOImpl implements ComputerDAO {
 					computerCourant.setCompany(new Company.Builder().build());
 				}
 				list.add(computerCourant);
+				LOGGER.info("List of results obtained");
 			}
 		}
 		catch (SQLException e) {
-			// TODO Auto-generated catch block
+			LOGGER.error("SQL exception raised while trying to obtain a list of results");
 			e.printStackTrace();
 		}
 		finally{
@@ -182,13 +117,9 @@ public class ComputerDAOImpl implements ComputerDAO {
 					rsCompany.close();
 				if(stmtCompany != null)
 					stmtCompany.close();
-				if(rs != null)
-					rs.close();
-				if(cn != null)
-					cn.close();
 			}
 			catch (SQLException e) {
-				// TODO Auto-generated catch block
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}
@@ -210,10 +141,12 @@ public class ComputerDAOImpl implements ComputerDAO {
 			stmt = cn.prepareStatement("SELECT id, name ,introduced, discontinued, company_id FROM computer WHERE id=?;");
 			stmt.setLong(1, id);
 			rs = stmt.executeQuery();
+			LOGGER.debug("Query executed "+stmt);
 			li = this.getResultList(rs, cn);
 			computer = li.get(0);
 		}
 		catch (SQLException e) {
+			LOGGER.error("SQL exception raised while trying to get a computer by id");
 			e.printStackTrace();
 		}
 
@@ -228,7 +161,11 @@ public class ComputerDAOImpl implements ComputerDAO {
 					stmt.close();
 
 				if (cn != null) cn.close(); 
-			} catch (SQLException e) {}
+			} 
+			catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
+				e.printStackTrace();
+			}
 		}
 
 		return computer;
@@ -246,8 +183,10 @@ public class ComputerDAOImpl implements ComputerDAO {
 			stmt = cn.prepareStatement("DELETE FROM computer WHERE id=?");
 			stmt.setLong(1, id);
 			result = stmt.executeUpdate();
+			LOGGER.info("Update executed"+stmt);
 		}
 		catch (SQLException e) {
+			LOGGER.error("SQL exception raised while trying to delete a computer");
 			e.printStackTrace();
 		}
 
@@ -262,6 +201,7 @@ public class ComputerDAOImpl implements ComputerDAO {
 					cn.close(); 
 
 			} catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}
@@ -295,8 +235,10 @@ public class ComputerDAOImpl implements ComputerDAO {
 				stmt.setNull(4, Types.BIGINT);
 			stmt.setLong(5, c.getId());
 			result = stmt.executeUpdate();
+			LOGGER.info("Update executed"+stmt);
 		}
 		catch (SQLException e) {
+			LOGGER.error("SQL exception raised while trying to update a computer");
 			e.printStackTrace();
 		}
 
@@ -312,28 +254,29 @@ public class ComputerDAOImpl implements ComputerDAO {
 					cn.close();
 
 			} catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}
 		return result;
 	}
 
-	@Override
-	public int getNumber() {
+
+	public int getAmount(Connection cn) {
 		PreparedStatement stmt = null;
-		Connection cn = null;
 		ResultSet rs = null;
 		int number = 0;
 		try{
-			cn = DAOFactory.INSTANCE_DAO.getConnexion();
 			stmt = cn.prepareStatement("SELECT COUNT(*) FROM computer;");
 			rs = stmt.executeQuery();
+			LOGGER.debug("Query executed"+stmt);
 			while(rs.next()){
 				number = rs.getInt(1);
 			}
 
 		}
 		catch(SQLException e){
+			LOGGER.error("SQL exception raised while trying to get the amount of computers");
 			e.printStackTrace();
 		}
 		finally {
@@ -343,11 +286,8 @@ public class ComputerDAOImpl implements ComputerDAO {
 
 					stmt.close();
 
-				if (cn != null) 
-
-					cn.close();
-
 			} catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}
@@ -355,20 +295,35 @@ public class ComputerDAOImpl implements ComputerDAO {
 	}
 
 	@Override
-	public List<Computer> getComputers(int limit, int offset) {
+	public PageWrapper<Computer> getComputers(int limit, int offset) {
+		PageWrapper<Computer> pw = new PageWrapper<Computer>();
 		PreparedStatement stmt = null;
 		Connection cn = null;
 		ResultSet rs = null;
 		List<Computer> li = null;
+		int resultCount = 0;
 		try{
 			cn = DAOFactory.INSTANCE_DAO.getConnexion();
+			resultCount = this.getAmount(cn);
 			stmt = cn.prepareStatement("SELECT id, name ,introduced, discontinued, company_id FROM computer LIMIT ? OFFSET ?;");
 			stmt.setInt(1, limit);
 			stmt.setInt(2, offset);
 			rs = stmt.executeQuery();
+			LOGGER.debug("Query executed"+stmt);
 			li = this.getResultList(rs, cn);
+			pw.setCurrPage((offset/limit)+1);
+			pw.setResultsPerPage(limit);
+			pw.setResultCount(resultCount);
+			pw.setElementList(li);
+			pw.setCurrentResultCount(li.size());
+			if(resultCount%limit!=0)
+				pw.setPageCount((resultCount/limit)+1);
+			else
+				pw.setPageCount(resultCount/limit);
+
 		}
 		catch(SQLException e){
+			LOGGER.error("SQL exception raised while trying to get a list of computers");
 			e.printStackTrace();
 		}
 		finally{
@@ -383,28 +338,47 @@ public class ComputerDAOImpl implements ComputerDAO {
 					cn.close();
 
 			} catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}
-		return li;
+		return pw;
 	}
 
 	@Override
-	public List<Computer> getComputers(int limit, int offset, String search) {
+	public PageWrapper<Computer> getComputers(int limit, int offset, String search) {
+		PageWrapper<Computer> pw = new PageWrapper<Computer>();
 		List<Computer> li = null;
 		PreparedStatement stmt = null;
 		Connection cn = null;
 		ResultSet rs = null;
+		int resultCount = 0;
 		try{
 			cn = DAOFactory.INSTANCE_DAO.getConnexion();
-			stmt = cn.prepareStatement("SELECT id, name ,introduced, discontinued, company_id FROM computer WHERE name LIKE ? LIMIT ? OFFSET ? ;");
-			stmt.setInt(2, limit);
-			stmt.setInt(3, offset);
+			resultCount = this.getAmount(search, cn);
+			stmt = cn.prepareStatement("SELECT c.id, c.name, c.introduced, c.discontinued, "
+					+ "b.id, b.name FROM computer c JOIN company b ON c.company_id = b.id WHERE "
+					+ "c.name LIKE ? OR b.name LIKE ? LIMIT ? OFFSET ?;");
 			stmt.setString(1, "%"+search+"%");
+			stmt.setString(2, "%"+search+"%");
+			stmt.setInt(3, limit);
+			stmt.setInt(4, offset);
+			
 			rs = stmt.executeQuery();
+			LOGGER.debug("Query executed"+stmt);
 			li = this.getResultList(rs, cn);
+			pw.setCurrPage((offset/limit)+1);
+			pw.setResultsPerPage(limit);
+			pw.setResultCount(resultCount);
+			pw.setElementList(li);
+			if(resultCount%limit!=0)
+				pw.setPageCount((resultCount/limit)+1);
+			else
+				pw.setPageCount(resultCount/limit);
+			
 		}
 		catch(SQLException e){
+			LOGGER.error("SQL exception raised while trying to get a list of computers");
 			e.printStackTrace();
 		}
 		finally{
@@ -419,29 +393,32 @@ public class ComputerDAOImpl implements ComputerDAO {
 					cn.close();
 
 			} catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}
-		return li;
+		return pw;
 	}
 
-	@Override
-	public int getNumber(String search) {
+
+	public int getAmount(String search, Connection cn) {
 		PreparedStatement stmt = null;
-		Connection cn = null;
 		ResultSet rs = null;
 		int number = 0;
 		try{
-			cn = DAOFactory.INSTANCE_DAO.getConnexion();
-			stmt = cn.prepareStatement("SELECT COUNT(*) FROM computer WHERE name LIKE ?;");
+			stmt = cn.prepareStatement("SELECT COUNT(*) FROM computer c JOIN company b ON c.company_id = b.id WHERE "
+					+ "c.name LIKE ? OR b.name LIKE ?;");
 			stmt.setString(1,"%"+search+"%");
+			stmt.setString(2,"%"+search+"%");
 			rs = stmt.executeQuery();
+			LOGGER.debug("Query executed"+stmt);
 			while(rs.next()){
 				number = rs.getInt(1);
 			}
 
 		}
 		catch(SQLException e){
+			LOGGER.error("SQL exception raised while trying to get the amount of computers");
 			e.printStackTrace();
 		}
 		finally {
@@ -451,11 +428,8 @@ public class ComputerDAOImpl implements ComputerDAO {
 
 					stmt.close();
 
-				if (cn != null) 
-
-					cn.close();
-
 			} catch (SQLException e) {
+				LOGGER.error("SQL exception raised while trying to close a connection");
 				e.printStackTrace();
 			}
 		}

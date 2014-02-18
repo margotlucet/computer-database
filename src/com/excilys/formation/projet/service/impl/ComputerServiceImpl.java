@@ -1,11 +1,11 @@
 package com.excilys.formation.projet.service.impl;
 
-import java.util.List;
 
 import com.excilys.formation.projet.dao.ComputerDAO;
 import com.excilys.formation.projet.dao.DAOFactory;
 import com.excilys.formation.projet.om.Computer;
 import com.excilys.formation.projet.service.ComputerService;
+import com.excilys.formation.projet.wrapper.PageWrapper;
 
 public class ComputerServiceImpl implements ComputerService {
 	private ComputerDAO computerDAO;
@@ -26,23 +26,6 @@ public class ComputerServiceImpl implements ComputerService {
 	public Computer getById(long id){
 		Computer c = this.computerDAO.getById(id);
 		return c;
-	}
-	/* (non-Javadoc)
-	 * @see com.excilys.formation.projet.service.ComputerService#getComputers()
-	 */
-	@Override
-	public List<Computer> getComputers(){
-		List<Computer> resultList = computerDAO.getComputers();
-		return resultList;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.excilys.formation.projet.service.ComputerService#getComputers(java.lang.String)
-	 */
-	@Override
-	public List<Computer> getComputers(String search){
-		List<Computer> resultList = computerDAO.getComputers(search);
-		return resultList;
 	}
 
 	/* (non-Javadoc)
@@ -76,23 +59,15 @@ public class ComputerServiceImpl implements ComputerService {
 		this.computerDAO = computerDAO;
 	}
 
-	@Override
-	public int getNumber() {
-		return this.computerDAO.getNumber();
-	}
 
 	@Override
-	public List<Computer> getPage(int page, int nbResult) {		
+	public PageWrapper<Computer> getPage(int page, int nbResult) {	
+
 		return this.computerDAO.getComputers(nbResult, (page-1)*nbResult);
 	}
 
 	@Override
-	public int getNumber(String search) {
-		return this.computerDAO.getNumber(search);
-	}
-
-	@Override
-	public List<Computer> getPage(int page, int nbResult, String search) {
+	public PageWrapper<Computer> getPage(int page, int nbResult, String search) {
 		return this.computerDAO.getComputers(nbResult, (page-1)*nbResult, search);
 	}
 

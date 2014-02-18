@@ -6,4 +6,5 @@ public final class Constant {
 	public static final String WRONG_DATE = "WRONG_DATE";
 	public static final String WRONG_DATE_EMPTY_NAME = "WRONG_DATE_EMPTY_NAME";
 	public static final String OK = "OK";
+
 }
