@@ -24,6 +24,7 @@
 				<div class="input">
 					<input type="text" name="introducedDate" data-validation="date"
 						data-validation-format="dd/mm/yyyy"
+						data-validation-optional="true"
 						data-validation-error-msg="The date format must be DD/MM/YYYY "
 						value="${computer.introduced}" /> <span class="help-inline">DD/MM/YYYY</span>
 				</div>
@@ -34,6 +35,7 @@
 					<input type="text" name="discontinuedDate" data-validation="date"
 						data-validation-error-msg="The date format must be DD/MM/YYYY "
 						data-validation-format="dd/mm/yyyy"
+						data-validation-optional="true"
 						value="${computer.discontinued}" /> <span class="help-inline">DD/MM/YYYY</span>
 				</div>
 			</div>

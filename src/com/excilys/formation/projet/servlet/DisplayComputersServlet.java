@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.formation.projet.dao.DAOFactory;
 import com.excilys.formation.projet.dto.ComputerDTO;
 import com.excilys.formation.projet.mapper.ComputerDTOMapper;
 import com.excilys.formation.projet.service.ComputerService;
 import com.excilys.formation.projet.service.impl.ComputerServiceImpl;
+import com.excilys.formation.projet.util.Constant;
 import com.excilys.formation.projet.wrapper.PageWrapper;
 
 /**
@@ -37,7 +37,7 @@ public class DisplayComputersServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ComputerService computerService = new ComputerServiceImpl(DAOFactory.INSTANCE_DAO.getComputerDAO());
+		ComputerService computerService = new ComputerServiceImpl();
 		
 		PageWrapper<ComputerDTO> pageResult = null;
 		String page = request.getParameter("page");
@@ -59,10 +59,12 @@ public class DisplayComputersServlet extends HttpServlet {
 		
 		if((search!=null)&&(!search.equals(""))){
 			LOGGER.debug("Recherche");
-			pageResult = ComputerDTOMapper.toComputerDTOPageWrapper(computerService.getPage(currPage, resultsPerPage, search));
+			pageResult = ComputerDTOMapper.toComputerDTOPageWrapper(computerService.getPage(currPage, resultsPerPage, Constant.NAME
+					, Constant.ASC, search));
 		}
 		else{
-			pageResult = ComputerDTOMapper.toComputerDTOPageWrapper(computerService.getPage(currPage, resultsPerPage));
+			pageResult = ComputerDTOMapper.toComputerDTOPageWrapper(computerService.getPage(currPage, resultsPerPage, Constant.NAME
+					, Constant.ASC));
 		}
 	
 		request.setAttribute("pageResult", pageResult);

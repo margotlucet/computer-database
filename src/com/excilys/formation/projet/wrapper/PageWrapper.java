@@ -2,6 +2,8 @@ package com.excilys.formation.projet.wrapper;
 
 import java.util.List;
 
+import com.excilys.formation.projet.util.Constant;
+
 public class PageWrapper<T> {
 	private List<T> elementList;
 	private int currPage;
@@ -9,7 +11,8 @@ public class PageWrapper<T> {
 	private int resultCount;
 	private int resultsPerPage;
 	private int currentResultCount;
-
+	private String orderBy = Constant.NAME;
+	private String orderDirection = Constant.ASC;
 
 
 
@@ -59,6 +62,22 @@ public class PageWrapper<T> {
 
 	public void setCurrentResultCount(int currentResultCount) {
 		this.currentResultCount = currentResultCount;
+	}
+
+	public String getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
+	}
+
+	public String getOrderDirection() {
+		return orderDirection;
+	}
+
+	public void setOrderDirection(String orderDirection) {
+		this.orderDirection = orderDirection;
 	}
 	
 	@Override

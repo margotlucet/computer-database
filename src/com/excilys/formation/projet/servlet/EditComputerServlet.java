@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.formation.projet.dao.DAOFactory;
 import com.excilys.formation.projet.mapper.ComputerDTOMapper;
 import com.excilys.formation.projet.om.Company;
 import com.excilys.formation.projet.om.Computer;
@@ -60,7 +59,7 @@ public class EditComputerServlet extends HttpServlet {
 		Computer c = ComputerDTOMapper.toComputer(cDTO);
 
 
-		ComputerService computerService = new ComputerServiceImpl(DAOFactory.INSTANCE_DAO.getComputerDAO());
+		ComputerService computerService = new ComputerServiceImpl();
 		//Boolean success = false;
 		//StringBuilder message = new StringBuilder();
 		computerService.update(c);

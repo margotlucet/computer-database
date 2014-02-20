@@ -31,7 +31,7 @@ public class DeleteComputerServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ComputerService computerService = new ComputerServiceImpl();
-		computerService.delete(request.getParameter("id"));
+		computerService.delete(Long.parseLong(request.getParameter("id")));
 		getServletContext().getRequestDispatcher("/index.jsp").forward(request,response);	
 		// TODO Auto-generated method stub
 	}

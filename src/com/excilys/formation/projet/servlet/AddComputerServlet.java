@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.formation.projet.dao.DAOFactory;
 import com.excilys.formation.projet.dto.ComputerDTO;
 import com.excilys.formation.projet.mapper.ComputerDTOMapper;
 import com.excilys.formation.projet.om.Company;
@@ -51,7 +50,7 @@ public class AddComputerServlet extends HttpServlet {
 				.discontinued(request.getParameter("discontinuedDate")).companyId(Long.parseLong(request.getParameter("company"))).build();
 		ValidationMessage validation = Validator.validateComputerDTO(cDTO); 
 		if(validation.isValid()){
-			ComputerService computerService = new ComputerServiceImpl(DAOFactory.INSTANCE_DAO.getComputerDAO());
+			ComputerService computerService = new ComputerServiceImpl();
 			computerService.add(ComputerDTOMapper.toComputer(cDTO));
 			request.setAttribute("message", validation);
 			System.out.println(validation);

@@ -57,8 +57,8 @@
 		</c:forEach>
 	</c:if>
 
-	<c:if test="${(pageCount>9) && (page>5) && ((pageCount-page)<4)}">
-		<c:forEach var="i" begin="${pageCount-9}" end="${pageCount}">
+	<c:if test="${(pageCount>9) && (page>5) && ((pageCount-page)<=4)}">
+		<c:forEach var="i" begin="${pageCount-8}" end="${pageCount}">
 			<c:if test="${page == i }">
 				<li class="active"><a
 					href="${actionPrefix}page=${i}&resultsPerPage=${resultsPerPage}&search=${search}">

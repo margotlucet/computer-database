@@ -25,7 +25,7 @@ public interface ComputerService {
 	 * Delete a computer
 	 * @param id
 	 */
-	public abstract void delete(String id);
+	public abstract void delete(long id);
 
 	/**
 	 * Gets a particular page of computers existing in the database
@@ -33,7 +33,7 @@ public interface ComputerService {
 	 * @param nbResult number of results
 	 * @return
 	 */
-	public abstract PageWrapper<Computer> getPage(int page, int nbResult);
+	public abstract PageWrapper<Computer> getPage(int page, int nbResult, String orderBy, String orderDirection);
 	/**
 	 * Gets a particular page of computers existing in the database containing a particular string 
 	 * @param page number of the page
@@ -41,5 +41,5 @@ public interface ComputerService {
 	 * @param search
 	 * @return
 	 */
-	public abstract PageWrapper<Computer> getPage(int page, int nbResult, String search);
+	public abstract PageWrapper<Computer> getPage(int page, int nbResult, String orderBy, String orderDirection, String search);
 }

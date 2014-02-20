@@ -48,23 +48,9 @@ public class CompanyDAOImpl implements CompanyDAO {
 			e.printStackTrace();
 		}
 		finally{
-			try {
-				if (rs != null)
-
-					rs.close();
-
-				if (stmt != null)
-
-					stmt.close();
-
-				if (cn != null) 
-
-					cn.close();
-
-			} catch (SQLException e) {
-				LOGGER.error("SQL exception raised while trying to close a connection");
-				e.printStackTrace();
-			}
+			DAOFactory.INSTANCE_DAO.close(cn);
+			DAOFactory.INSTANCE_DAO.close(stmt);
+			DAOFactory.INSTANCE_DAO.close(rs);
 		}
 		return company;
 	}
@@ -99,23 +85,9 @@ public class CompanyDAOImpl implements CompanyDAO {
 		}
 
 		finally {
-			try {
-				if (rs != null)
-
-					rs.close();
-
-				if (stmt != null)
-
-					stmt.close();
-
-				if (cn != null) 
-
-					cn.close();
-			} 
-			catch (SQLException e) {
-				LOGGER.error("SQL exception raised while trying to close a connection");
-				e.printStackTrace();
-			}
+			DAOFactory.INSTANCE_DAO.close(cn);
+			DAOFactory.INSTANCE_DAO.close(stmt);
+			DAOFactory.INSTANCE_DAO.close(rs);
 		}
 		return c;
 	}
@@ -134,7 +106,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 			stmt = cn.prepareStatement("SELECT id, name FROM company;");
 			rs = stmt.executeQuery();
 			LOGGER.info("Query executed "+stmt);
-			li = getResultList(rs,cn);
+			li = getResultList(rs);
 			LOGGER.info("Companies obtained");
 		}
 		catch (SQLException e) {
@@ -143,30 +115,15 @@ public class CompanyDAOImpl implements CompanyDAO {
 		}
 
 		finally {
-			try {
-				if (rs != null)
-
-					rs.close();
-
-				if (stmt != null)
-
-					stmt.close();
-
-				if (cn != null) 
-
-					cn.close();
-
-			} 
-			catch (SQLException e) {
-				LOGGER.error("SQL exception raised while trying to close a connection");
-				e.printStackTrace();
-			}
+			DAOFactory.INSTANCE_DAO.close(cn);
+			DAOFactory.INSTANCE_DAO.close(stmt);
+			DAOFactory.INSTANCE_DAO.close(rs);
 		}
 
 		return li;
 	}
 
-	public List<Company> getResultList(ResultSet rs, Connection cn){
+	public List<Company> getResultList(ResultSet rs){
 		List<Company> list = new ArrayList<Company>();
 		Company companyCourant = null;
 		try {
@@ -181,17 +138,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 		}
 
 		finally{
-
-			try {
-				if(rs!=null)
-					rs.close();
-				if(cn!=null)
-					cn.close();
-			} catch (SQLException e) {
-				LOGGER.error("SQL exception raised while trying to close a connection");
-				e.printStackTrace();
-			}
-
+			DAOFactory.INSTANCE_DAO.close(rs);
 		}
 		return list;
 	}
